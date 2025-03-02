@@ -1,0 +1,1 @@
+for file in src/main/java/com/project/*.java; do sed -i 's/[ \t]*$//' "$file"; done

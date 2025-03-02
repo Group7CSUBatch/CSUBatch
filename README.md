@@ -78,7 +78,6 @@ The CSUbatch Scheduling System is a Java-based application designed to manage an
 - Implement detailed performance metrics calculation (turnaround time, CPU time, waiting time, throughput).
 - Complete the automated test logic in the `runTests` method of `CommandLineInterface`.
 - Enhance the logging system to include more detailed job and system information.
-- Implement log rotation logic in `LoggingSystem`.
 - Add more comprehensive test cases in `AppTest.java`.
 
 ## Commands

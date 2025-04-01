@@ -1,0 +1,12 @@
+[2025-04-01 02:47:28.034] [INFO] Created new log file: /workspaces/CSUBatch/logs/csubatch_2025-04-01_02-47-28.log
+[2025-04-01 02:47:28.042] [INFO] [System] Lock monitor started with check interval of 10 seconds
+[2025-04-01 02:47:28.042] [INFO] [System] Lock monitoring started
+[2025-04-01 02:47:28.046] [INFO] TRANSACTION: System initialized with centralized job state management and job queue access
+[2025-04-01 02:47:28.048] [INFO] [System] Lock monitor stopped
+[2025-04-01 02:47:28.049] [INFO] [System] Lock monitor stopped
+[2025-04-01 02:47:28.200] [INFO] [System] Lock monitor started with check interval of 10 seconds
+[2025-04-01 02:47:28.200] [INFO] [System] Lock monitoring started
+[2025-04-01 02:47:28.201] [INFO] TRANSACTION: Scheduler thread started
+[2025-04-01 02:47:28.201] [INFO] [Scheduler] Scheduler thread started with policy: FCFS
+[2025-04-01 02:47:28.202] [INFO] [Scheduler] Scheduler thread exiting
+[2025-04-01 02:47:28.204] [INFO] [System] Console interface started

@@ -1,5 +1,11 @@
 package com.project.management;
 
+import com.project.core.Job;
+import com.project.core.JobQueue;
+import com.project.core.JobStatus;
+import com.project.logging.Logger;
+import com.project.scheduler.Dispatcher;
+import com.project.scheduler.Scheduler;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -13,12 +19,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.project.core.Job;
-import com.project.core.JobQueue;
-import com.project.core.JobStatus;
-import com.project.logging.Logger;
-import com.project.scheduler.Dispatcher;
-import com.project.scheduler.Scheduler;
 
 /**
  * Test suite for the SystemController class focusing on job queue operations.

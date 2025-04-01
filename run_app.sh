@@ -1,1 +1,1 @@
-mvn clean compile exec:java -Dexec.mainClass="com.project.App"
+mvn clean compile exec:java -Dexec.mainClass="com.project.unified.UnifiedApp"

@@ -1,0 +1,12 @@
+# Mixed workload scenario
+# Format: job_name cpu_time priority
+# Each line represents one job
+quickTask1 5 2
+quickTask2 3 1
+mediumTask1 45 2
+mediumTask2 30 3
+longTask1 120 1
+quickTask3 8 2
+quickTask4 2 3
+mediumTask3 60 1
+longTask2 90 2 

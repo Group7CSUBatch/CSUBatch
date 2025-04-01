@@ -1,8 +1,0 @@
-com/project/CommandLineInterface.class
-com/project/LoggingSystem.class
-com/project/JobQueue.class
-com/project/Scheduler.class
-com/project/Job.class
-com/project/Scheduler$SchedulingPolicy.class
-com/project/Dispatcher.class
-com/project/App.class

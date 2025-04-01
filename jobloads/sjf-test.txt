@@ -1,0 +1,12 @@
+# SJF testing scenario
+# Format: job_name cpu_time priority
+# Jobs are arranged in decreasing CPU time order to test SJF policy
+sjfJob1 1 2
+sjfJob2 2 2
+sjfJob3 5 2
+sjfJob4 10 2
+sjfJob5 15 2
+sjfJob6 20 2
+sjfJob7 30 2
+sjfJob8 50 2
+sjfJob9 100 2 

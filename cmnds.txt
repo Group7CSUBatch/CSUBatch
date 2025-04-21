@@ -1,3 +1,4 @@
+chmod
 sh complile_n_run_app.sh
 load jobloads/mixed-workload.txt
 list
@@ -12,3 +13,8 @@ help -invalid
 run
 run j 10 1
 list -1
+quit
+./CSUbatch
+test benchmark sjf 3 2 2 3
+test benchmark fcfs 2 2 2 4
+quit

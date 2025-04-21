@@ -1,0 +1,14 @@
+sh complile_n_run_app.sh
+load jobloads/mixed-workload.txt
+list
+sjf
+list
+priority
+list
+help
+help -test
+help -run
+help -invalid
+run
+run j 10 1
+list -1

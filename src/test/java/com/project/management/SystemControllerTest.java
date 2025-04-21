@@ -1,11 +1,5 @@
 package com.project.management;
 
-import com.project.core.Job;
-import com.project.core.JobQueue;
-import com.project.core.JobStatus;
-import com.project.logging.Logger;
-import com.project.scheduler.Dispatcher;
-import com.project.scheduler.Scheduler;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -19,6 +13,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.project.core.Job;
+import com.project.core.JobQueue;
+import com.project.core.JobStatus;
+import com.project.logging.Logger;
+import com.project.scheduler.Dispatcher;
+import com.project.scheduler.Scheduler;
 
 /**
  * Test suite for the SystemController class focusing on job queue operations.
@@ -48,12 +48,18 @@ public class SystemControllerTest {
     
     @BeforeEach
     public void setUp() {
-        // For tests that don't need to verify interactions with these components,
-        // we can use the actual constructor and replace the managers with mocks later
-        systemController = SystemController.getInstance(mockJobQueue, mockScheduler, mockDispatcher, mockLogger);
-        
-        // Replace internal managers with mocks
+        // Reset the singleton instance before each test to ensure clean state
         try {
+            // Use reflection to reset the singleton instance
+            java.lang.reflect.Field instanceField = SystemController.class.getDeclaredField("instance");
+            instanceField.setAccessible(true);
+            instanceField.set(null, null);
+            
+            // For tests that don't need to verify interactions with these components,
+            // we can use the actual constructor and replace the managers with mocks later
+            systemController = SystemController.getInstance(mockJobQueue, mockScheduler, mockDispatcher, mockLogger);
+            
+            // Replace internal managers with mocks
             java.lang.reflect.Field jobStateManagerField = SystemController.class.getDeclaredField("jobStateManager");
             jobStateManagerField.setAccessible(true);
             jobStateManagerField.set(systemController, mockJobStateManager);
@@ -131,11 +137,23 @@ public class SystemControllerTest {
     
     @Test
     public void testSetSchedulingPolicy() {
-        // Execute
-        systemController.setSchedulingPolicy(Scheduler.Policy.SJF);
-        
-        // Verify
-        verify(mockScheduler).setPolicy(Scheduler.Policy.SJF);
+        // Directly set the scheduler to ensure it's correctly referenced
+        try {
+            java.lang.reflect.Field schedulerField = SystemController.class.getDeclaredField("scheduler");
+            schedulerField.setAccessible(true);
+            schedulerField.set(systemController, mockScheduler);
+            
+            // Verify the scheduler is correctly set now
+            assertSame(mockScheduler, systemController.getScheduler(), "The scheduler mock is not properly set in the controller");
+            
+            // Execute
+            systemController.setSchedulingPolicy(Scheduler.Policy.SJF);
+            
+            // Verify
+            verify(mockScheduler).setPolicy(Scheduler.Policy.SJF);
+        } catch (Exception e) {
+            fail("Failed to set scheduler field: " + e.getMessage());
+        }
     }
     
     @Test

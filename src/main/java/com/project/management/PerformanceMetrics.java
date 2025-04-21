@@ -6,6 +6,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
+import com.project.logging.Logger;
+import com.project.logging.LoggingSystem;
+
 
 /**
  * PerformanceMetrics tracks and calculates various performance metrics for the CSUbatch system.
@@ -20,6 +23,7 @@ public class PerformanceMetrics {
     private final AtomicInteger totalJobsSubmitted = new AtomicInteger(0);
     private long systemStartTime;
     private volatile long lastResetTime;
+    private final Logger logger;
     
     /**
      * Inner class to hold metrics for a single job.
@@ -34,6 +38,7 @@ public class PerformanceMetrics {
         private long waitTime;                // Time spent waiting
         private long actualCpuTime;           // Actual time spent executing
         private long turnaroundTime;          // Total time from submission to completion
+        private Logger logger;
         
         /**
          * Creates a new JobMetrics object for tracking a job's performance.
@@ -48,6 +53,9 @@ public class PerformanceMetrics {
             this.cpuTime = cpuTime;
             this.priority = priority;
             this.arrivalTime = arrivalTime;
+            LoggingSystem loggingSystem = new LoggingSystem();
+            this.logger = new Logger("JobMetrics", loggingSystem);
+            this.logger.info("Created new JobMetrics for job: " + jobName);
         }
         
         /**
@@ -58,6 +66,7 @@ public class PerformanceMetrics {
         public void setStartTime(long startTime) {
             this.startTime = startTime;
             this.waitTime = startTime - arrivalTime;
+            logger.info("Job " + jobName + " started. Wait time: " + waitTime + "ms");
         }
         
         /**
@@ -69,6 +78,8 @@ public class PerformanceMetrics {
             this.completionTime = completionTime;
             this.actualCpuTime = completionTime - startTime;
             this.turnaroundTime = completionTime - arrivalTime;
+            logger.info("Job " + jobName + " completed. CPU time: " + actualCpuTime + 
+                       "ms, Turnaround time: " + turnaroundTime + "ms");
         }
         
         /**
@@ -159,6 +170,9 @@ public class PerformanceMetrics {
     public PerformanceMetrics() {
         systemStartTime = System.currentTimeMillis();
         lastResetTime = systemStartTime;
+        LoggingSystem loggingSystem = new LoggingSystem();
+        this.logger = new Logger("PerformanceMetrics", loggingSystem);
+        logger.info("Performance metrics system initialized");
     }
     
     /**
@@ -169,6 +183,17 @@ public class PerformanceMetrics {
         totalJobsCompleted.set(0);
         totalJobsSubmitted.set(0);
         lastResetTime = System.currentTimeMillis();
+        logger.info("Performance metrics reset");
+    }
+
+    // get the job metrics map copy
+    public ConcurrentMap<String, JobMetrics> getJobMetricsMap() {
+        return new ConcurrentHashMap<>(jobMetricsMap);
+    }
+
+    // update the job metrics map
+    public void updateJobMetricsMap(ConcurrentMap<String, JobMetrics> jobMetricsMap) {
+        this.jobMetricsMap.putAll(jobMetricsMap);
     }
     
     /**
@@ -183,6 +208,7 @@ public class PerformanceMetrics {
         JobMetrics metrics = new JobMetrics(jobName, cpuTime, priority, arrivalTime);
         jobMetricsMap.put(jobName, metrics);
         totalJobsSubmitted.incrementAndGet();
+        logger.info("Job submitted: " + jobName + " (CPU time: " + cpuTime + "s, Priority: " + priority + ")");
     }
     
     /**
@@ -195,6 +221,9 @@ public class PerformanceMetrics {
         JobMetrics metrics = jobMetricsMap.get(jobName);
         if (metrics != null) {
             metrics.setStartTime(startTime);
+            logger.info("Job started: " + jobName);
+        } else {
+            logger.debug("Attempted to record start for unknown job: " + jobName);
         }
     }
     
@@ -205,10 +234,14 @@ public class PerformanceMetrics {
      * @param completionTime The time when the job completed
      */
     public void recordJobCompletion(String jobName, long completionTime) {
+        logger.info("Recording job completion for job: " + jobName);
         JobMetrics metrics = jobMetricsMap.get(jobName);
         if (metrics != null) {
             metrics.setCompletionTime(completionTime);
             totalJobsCompleted.incrementAndGet();
+            logger.info("Job completed: " + jobName);
+        } else {
+            logger.debug("Attempted to record completion for unknown job: " + jobName);
         }
     }
     
@@ -220,6 +253,7 @@ public class PerformanceMetrics {
     public double getAverageTurnaroundTime() {
         List<JobMetrics> completedJobs = getCompletedJobs();
         if (completedJobs.isEmpty()) {
+            logger.info("No completed jobs for turnaround time calculation");
             return 0.0;
         }
         
@@ -227,7 +261,9 @@ public class PerformanceMetrics {
             .mapToDouble(JobMetrics::getTurnaroundTime)
             .sum();
         
-        return totalTurnaroundTime / completedJobs.size();
+        double avgTurnaround = totalTurnaroundTime / completedJobs.size();
+        logger.info("Average turnaround time: " + avgTurnaround + "ms");
+        return avgTurnaround;
     }
     
     /**
@@ -238,6 +274,7 @@ public class PerformanceMetrics {
     public double getAverageWaitingTime() {
         List<JobMetrics> completedJobs = getCompletedJobs();
         if (completedJobs.isEmpty()) {
+            logger.info("No completed jobs for waiting time calculation");
             return 0.0;
         }
         
@@ -245,7 +282,9 @@ public class PerformanceMetrics {
             .mapToDouble(JobMetrics::getWaitTime)
             .sum();
         
-        return totalWaitingTime / completedJobs.size();
+        double avgWaiting = totalWaitingTime / completedJobs.size();
+        logger.info("Average waiting time: " + avgWaiting + "ms");
+        return avgWaiting;
     }
     
     /**
@@ -256,6 +295,7 @@ public class PerformanceMetrics {
     public double getAverageCpuTime() {
         List<JobMetrics> completedJobs = getCompletedJobs();
         if (completedJobs.isEmpty()) {
+            logger.info("No completed jobs for CPU time calculation");
             return 0.0;
         }
         
@@ -263,7 +303,9 @@ public class PerformanceMetrics {
             .mapToDouble(JobMetrics::getActualCpuTime)
             .sum();
         
-        return totalCpuTime / completedJobs.size();
+        double avgCpu = totalCpuTime / completedJobs.size();
+        logger.info("Average CPU time: " + avgCpu + "ms");
+        return avgCpu;
     }
     
     /**
@@ -276,10 +318,13 @@ public class PerformanceMetrics {
         double elapsedTimeSeconds = (currentTime - lastResetTime) / 1000.0;
         
         if (elapsedTimeSeconds <= 0) {
+            logger.info("No elapsed time for throughput calculation");
             return 0.0;
         }
         
-        return totalJobsCompleted.get() / elapsedTimeSeconds;
+        double throughput = totalJobsCompleted.get() / elapsedTimeSeconds;
+        logger.info("System throughput: " + throughput + " jobs/second");
+        return throughput;
     }
     
     /**
@@ -288,7 +333,9 @@ public class PerformanceMetrics {
      * @return The total number of jobs completed
      */
     public int getTotalJobsCompleted() {
-        return totalJobsCompleted.get();
+        int completed = totalJobsCompleted.get();
+        logger.info("Total jobs completed: " + completed);
+        return completed;
     }
     
     /**
@@ -297,7 +344,9 @@ public class PerformanceMetrics {
      * @return The total number of jobs submitted
      */
     public int getTotalJobsSubmitted() {
-        return totalJobsSubmitted.get();
+        int submitted = totalJobsSubmitted.get();
+        logger.info("Total jobs submitted: " + submitted);
+        return submitted;
     }
     
     /**
@@ -306,9 +355,11 @@ public class PerformanceMetrics {
      * @return A list of all completed jobs
      */
     private List<JobMetrics> getCompletedJobs() {
-        return jobMetricsMap.values().stream()
+        List<JobMetrics> completed = jobMetricsMap.values().stream()
             .filter(metrics -> metrics.getCompletionTime() > 0)
             .collect(Collectors.toList());
+        logger.debug("Retrieved " + completed.size() + " completed jobs");
+        return completed;
     }
     
     /**
@@ -317,7 +368,9 @@ public class PerformanceMetrics {
      * @return A list of all jobs
      */
     public List<JobMetrics> getAllJobs() {
-        return new ArrayList<>(jobMetricsMap.values());
+        List<JobMetrics> allJobs = new ArrayList<>(jobMetricsMap.values());
+        logger.debug("Retrieved " + allJobs.size() + " total jobs");
+        return allJobs;
     }
     
     /**
@@ -326,6 +379,8 @@ public class PerformanceMetrics {
      * @return The system uptime in milliseconds
      */
     public long getSystemUptime() {
-        return System.currentTimeMillis() - systemStartTime;
+        long uptime = System.currentTimeMillis() - systemStartTime;
+        logger.info("System uptime: " + uptime + "ms");
+        return uptime;
     }
 } 

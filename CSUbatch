@@ -1,34 +1,28 @@
 #!/bin/bash
 
-# CSUbatch - Shell script to compile and run the CSUbatch Scheduling System
+#######################################
+# CSUbatch Scheduling System Runner
+# 
+# This script runs the CSUbatch application.
+#
 # Usage: ./CSUbatch
+#######################################
 
-# Set the working directory to the script's directory
+# Set working directory to script location
 cd "$(dirname "$0")"
 
-# Check if Java is installed
-if ! command -v java &> /dev/null; then
-    echo "Java is not installed. Please install Java to run CSUbatch."
-    exit 1
-fi
-
-# Check if Maven is installed
-if ! command -v mvn &> /dev/null; then
-    echo "Maven is not installed. Please install Maven to run CSUbatch."
-    exit 1
-fi
-
-# Check if the JAR file exists, if not, build it
-if [ ! -f "target/CSUbatch.jar" ]; then
-    echo "Building CSUbatch application..."
-    mvn clean package -DskipTests
-    
-    # Check if build was successful
-    if [ $? -ne 0 ]; then
-        echo "Build failed. Please fix the errors and try again."
+# Verify dependencies are installed
+check_dependency() {
+    if ! command -v $1 &> /dev/null; then
+        echo "$1 is not installed. Please install $1 to run CSUbatch."
         exit 1
     fi
-fi
+}
 
-# Run the application using the JAR file
-java -jar target/CSUbatch.jar 
+check_dependency "java"
+
+# clear the logs directory
+rm -rf logs/*
+
+# Run the application using Java
+java -cp target/classes com.project.unified.UnifiedApp

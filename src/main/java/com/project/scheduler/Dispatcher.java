@@ -5,6 +5,7 @@ import com.project.core.JobStatus;
 import com.project.logging.Logger;
 import com.project.management.JobQueueManager;
 import com.project.management.JobStateManager;
+import com.project.management.SystemController;
 
 /**
  * Dispatcher class responsible for executing jobs from the queue.
@@ -295,8 +296,15 @@ public class Dispatcher implements Runnable {
         if (logger != null) {
             logger.debug("Updating job " + job.getName() + " status to " + status);
         }
+
+        SystemController.getInstance().updateJobStatus(
+            job,
+            status,
+            "Dispatcher",
+            message
+        );
         
-        if (jobStateManager != null) {
+        /* if (jobStateManager != null) {
             jobStateManager.updateJobStatus(
                 job, 
                 status, 
@@ -309,6 +317,6 @@ public class Dispatcher implements Runnable {
             if (logger != null) {
                 logger.infoJob(job, message);
             }
-        }
+        } */
     }
 }

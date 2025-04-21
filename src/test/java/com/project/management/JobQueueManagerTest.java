@@ -7,6 +7,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
+import static org.mockito.Mockito.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,6 +23,7 @@ import com.project.logging.Logger;
  * Test suite for the JobQueueManager class.
  */
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class JobQueueManagerTest {
 
     @Mock
@@ -27,6 +31,9 @@ public class JobQueueManagerTest {
     
     @Mock
     private Logger mockLogger;
+    
+    @Mock
+    private SystemController mockSystemController;
     
     private JobQueue jobQueue;
     private JobQueueManager jobQueueManager;
@@ -37,6 +44,21 @@ public class JobQueueManagerTest {
     @BeforeEach
     public void setUp() {
         jobQueue = new JobQueue();
+        
+        // Mock the SystemController singleton before creating JobQueueManager
+        try {
+            // Use reflection to set the SystemController instance
+            java.lang.reflect.Field instanceField = SystemController.class.getDeclaredField("instance");
+            instanceField.setAccessible(true);
+            instanceField.set(null, mockSystemController);
+            
+            // Set up returns for mockSystemController methods that might be called
+            when(mockSystemController.updateJobStatus(any(Job.class), any(JobStatus.class), anyString(), anyString()))
+                .thenReturn(true);
+        } catch (Exception e) {
+            fail("Failed to set up SystemController mock: " + e.getMessage());
+        }
+        
         jobQueueManager = new JobQueueManager(jobQueue, mockJobStateManager, mockLogger);
         
         // Create test jobs with different priorities and CPU times

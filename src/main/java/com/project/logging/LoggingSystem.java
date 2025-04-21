@@ -240,7 +240,7 @@ public class LoggingSystem {
             // Log the creation of the new log file
             String message = "Created new log file: " + currentLogFile.getAbsolutePath();
             writeToLogFile(String.format("[%s] [%s] %s", getTimestamp(), LogLevel.INFO, message));
-            System.out.println(message);
+            // System.out.println(message);
         } catch (IOException e) {
             System.err.println("Error creating log file: " + e.getMessage());
         }
@@ -306,7 +306,7 @@ public class LoggingSystem {
             lockLogWriter.write(formattedMessage);
             lockLogWriter.newLine();
             lockLogWriter.flush();
-            System.out.println(message);
+            // System.out.println(message);
         } catch (IOException e) {
             System.err.println("Error creating lock log file: " + e.getMessage());
         }

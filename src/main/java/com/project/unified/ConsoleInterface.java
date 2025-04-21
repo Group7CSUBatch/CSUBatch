@@ -13,6 +13,7 @@ import com.project.scheduler.Dispatcher;
 import com.project.scheduler.Scheduler;
 
 import java.util.Scanner;
+import java.util.concurrent.ConcurrentMap;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.text.SimpleDateFormat;
@@ -35,8 +36,8 @@ public class ConsoleInterface implements JobStateManager.JobStateListener {
     private static final int MIN_RUN_ARGS = 4;
     private static final int PRIORITY_INDEX = 3;
     private static final int MAX_WAITING_ESTIMATE = 3600;
-    private static final String VERSION = "1.0.0";
-    private static final String BUILD_DATE = "2025-03-31";
+    private static final String VERSION = "1.0";
+    private static final String BUILD_DATE = "2025-04-20";
     
     // Help text map
     private final Map<String, String> helpTexts = new HashMap<>();
@@ -80,13 +81,13 @@ public class ConsoleInterface implements JobStateManager.JobStateListener {
         // General help text
         helpTexts.put("general", 
             "run <job> <time> <pri>: submit a job named <job>,\n" +
-            "                 execution time is <time>, priority is <pri>.\n" +
+            "                 execution time is <time>,\n   priority is <pri>.\n" +
             "list: display the job status.\n" +
             "fcfs: change the scheduling policy to FCFS.\n" +
             "sjf: change the scheduling policy to SJF.\n" +
             "priority: change the scheduling policy to priority.\n" +
             "test <benchmark> <policy> <num_of_jobs> <priority_levels>\n" +
-            "      <min-CPU-time> <max CPU time>\n" +
+            "      <min_CPU_time> <max_CPU_time>\n" +
             "quit: exit CSUbatch");
         
         // Help text for individual commands
@@ -166,7 +167,7 @@ public class ConsoleInterface implements JobStateManager.JobStateListener {
     public void start() {
         Scanner scanner = new Scanner(System.in);
         
-        System.out.println("Welcome to CSU batch job scheduler Version " + VERSION);
+        System.out.println("Welcome to Group 7's CSU batch job scheduler Version " + VERSION);
         System.out.println("Type 'help' to find more about CSUbatch commands.");
         logger.info("Console interface started");
         
@@ -184,8 +185,8 @@ public class ConsoleInterface implements JobStateManager.JobStateListener {
         }
         
         scanner.close();
-        System.out.println("CSUbatch system is shutting down...");
-        logger.info("Console interface shutting down");
+        // System.out.println("CSUbatch system is shutting down...");
+        // logger.info("Console interface shutting down");
         
         // Unregister as a listener
         systemController.removeJobStateListener(this);
@@ -236,7 +237,7 @@ public class ConsoleInterface implements JobStateManager.JobStateListener {
                     setPolicy(Scheduler.Policy.PRIORITY);
                     break;
                 case "test":
-                    runTests();
+                    runTests(parts);
                     break;
                 case "help":
                     if (parts.length > 1) {
@@ -370,7 +371,7 @@ public class ConsoleInterface implements JobStateManager.JobStateListener {
     private void displayPerformanceMetrics() {
         PerformanceMetrics metrics = systemController.getPerformanceMetrics();
         
-        System.out.println("\n============== PERFORMANCE METRICS ==============");
+        // System.out.println("\n============== PERFORMANCE METRICS ==============");
         
         // Get metrics data
         double avgTurnaroundTime = metrics.getAverageTurnaroundTime();
@@ -381,14 +382,13 @@ public class ConsoleInterface implements JobStateManager.JobStateListener {
         int totalJobsSubmitted = metrics.getTotalJobsSubmitted();
         
         // Display metrics
-        System.out.println("Total jobs submitted: " + totalJobsSubmitted);
-        System.out.println("Total jobs completed: " + totalJobsCompleted);
-        
+        System.out.println("Total number of jobs submitted: " + totalJobsSubmitted);
+        // System.out.println("Total jobs completed: " + totalJobsCompleted);
         // Format times from milliseconds to seconds with 2 decimal places
-        System.out.printf("Average Turnaround Time: %.2f seconds\n", avgTurnaroundTime / 1000.0);
-        System.out.printf("Average Waiting Time: %.2f seconds\n", avgWaitingTime / 1000.0);
-        System.out.printf("Average CPU Time: %.2f seconds\n", avgCpuTime / 1000.0);
-        System.out.printf("System Throughput: %.2f jobs per second\n", throughput);
+        System.out.printf("Average Turnaround Time:    %.2f seconds\n", avgTurnaroundTime / 1000.0);
+        System.out.printf("Average CPU Time:           %.2f seconds\n", avgCpuTime / 1000.0);
+        System.out.printf("Average Waiting Time:       %.2f seconds\n", avgWaitingTime / 1000.0);
+        System.out.printf("Throughput:                 %.3f No./second\n", throughput);
         
         // Format elapsed time
         long uptime = metrics.getSystemUptime();
@@ -399,12 +399,12 @@ public class ConsoleInterface implements JobStateManager.JobStateListener {
         seconds %= 60;
         minutes %= 60;
         
-        System.out.printf("System Uptime: %02d:%02d:%02d (HH:MM:SS)\n", hours, minutes, seconds);
+        // System.out.printf("System Uptime: %02d:%02d:%02d (HH:MM:SS)\n", hours, minutes, seconds);
         
         // Show currently active policy
-        System.out.println("Final Scheduling Policy: " + scheduler.getPolicy());
+        // System.out.println("Final Scheduling Policy: " + scheduler.getPolicy());
         
-        System.out.println("==================================================\n");
+        // System.out.println("==================================================\n");
         
         // Log performance data
         if (logger != null) {
@@ -476,12 +476,16 @@ public class ConsoleInterface implements JobStateManager.JobStateListener {
             }
             
             System.out.println("Job " + jobName + " added to queue.");
-            System.out.println("Job details: CPU Time = " + cpuTime + " seconds, Priority = " + priority);
+            // System.out.println("Job details: CPU Time = " + cpuTime + " seconds, Priority = " + priority);
             
             // Estimate waiting time based on scheduling policy
             int queueSize = jobQueueManager.getQueueSize();
             int waitEstimate = Math.min(queueSize * cpuTime, MAX_WAITING_ESTIMATE);
-            System.out.println("Estimated waiting time: " + waitEstimate + " seconds");
+            // out Total number of jobs in the queue: <number>
+            System.out.println("Total number of jobs in the queue: " + queueSize);
+            System.out.println("Expected waiting time: " + (waitEstimate-cpuTime) + " seconds");
+            // out Scheduling Policy: FCFS
+            System.out.println("Scheduling Policy: " + scheduler.getPolicyName()+".");
             
             if (loggingSystem != null) {
                 loggingSystem.logJobDetails(job, 0, 0, 0);
@@ -505,15 +509,15 @@ public class ConsoleInterface implements JobStateManager.JobStateListener {
         List<Job> jobs = systemController.listJobs();
         
         // Display total job count and current scheduling policy
-        System.out.println("Total number of jobs in the queue: " + jobs.size());
+        // Even if queue is empty, check if there's a running job
+        Job runningJob = null;
+        if (jobQueueManager != null && jobQueueManager.getUnderlyingQueue() != null) {
+            runningJob = jobQueueManager.getUnderlyingQueue().getRunningJob();
+        }
+        System.out.println("Total number of jobs in the queue: " + (runningJob != null ? jobs.size() + 1 : jobs.size()));
         System.out.println("Scheduling Policy: " + scheduler.getPolicy() + ".");
         
         if (jobs.isEmpty()) {
-            // Even if queue is empty, check if there's a running job
-            Job runningJob = null;
-            if (jobQueueManager != null && jobQueueManager.getUnderlyingQueue() != null) {
-                runningJob = jobQueueManager.getUnderlyingQueue().getRunningJob();
-            }
             
             if (runningJob != null) {
                 System.out.println("Queue is empty, but there is 1 job currently running.");
@@ -626,7 +630,13 @@ public class ConsoleInterface implements JobStateManager.JobStateListener {
      */
     private void setPolicy(Scheduler.Policy policy) {
         scheduler.setPolicy(policy);
-        String message = "Scheduling policy changed to " + policy;
+        int queueSize = jobQueueManager.getQueueSize();
+        String message = "Scheduling policy is switched to " + policy+".";
+        if (queueSize > 0) {
+            message += " All the " + queueSize + " waiting jobs have been rescheduled.";
+        }else{
+            message += " No waiting jobs.";
+        }
         System.out.println(message);
         logger.info(message);
     }
@@ -639,7 +649,7 @@ public class ConsoleInterface implements JobStateManager.JobStateListener {
             dispatcherThread = new Thread(dispatcher);
             dispatcherThread.setDaemon(true);
             dispatcherThread.start();
-            System.out.println("Dispatcher started.");
+            // System.out.println("Dispatcher started.");
             logger.info("Dispatcher thread started");
         }
     }
@@ -647,83 +657,65 @@ public class ConsoleInterface implements JobStateManager.JobStateListener {
     /**
      * Runs automated tests.
      */
-    private void runTests() {
-        System.out.println("Running automated tests...");
-        logger.info("Test command executed");
+    private void runTests(String[] parts) {
+        logger.info("Test command executed with benchmark: " + parts[1]);
         
-        // Run a series of basic tests
-        System.out.println("1. Testing job submission with various parameters...");
+        // Set the scheduling policy
+        Scheduler.Policy policy = Scheduler.Policy.valueOf(parts[2].toUpperCase());
+        scheduler.setPolicy(policy);
+        // System.out.println("  - " + policy + " policy set: SUCCESS");
+
+        // get current job metrics map
+        ConcurrentMap<String, PerformanceMetrics.JobMetrics> mainJobMetricsMap = systemController.getPerformanceMetrics().getJobMetricsMap();
+
+        // reset the job metrics map
+        systemController.getPerformanceMetrics().reset();
         
-        // Test 1: Submit a standard job
-        try {
-            String jobName = "TestJob1";
-            int cpuTime = 5;
-            int priority = 3;
+        // Generate and submit jobs
+        int numOfJobs = Integer.parseInt(parts[3]);
+        int priorityLevels = Integer.parseInt(parts[4]);
+        int minCpuTime = Integer.parseInt(parts[5]);
+        int maxCpuTime = Integer.parseInt(parts[6]);
+        
+        for (int i = 0; i < numOfJobs; i++) {
+            String jobName = parts[1] + "_Job" + (i + 1);
+            int cpuTime = minCpuTime + (int)(Math.random() * ((maxCpuTime - minCpuTime) + 1));
+            int priority = (int)(Math.random() * priorityLevels);
             
             Job job = new Job(jobName, cpuTime, priority, System.currentTimeMillis(), JobStatus.WAITING);
-            boolean added = systemController.addJob(job, "ConsoleInterface-Test");
+            boolean added = systemController.addJob(job, "ConsoleInterface");
             
             if (!added) {
-                System.out.println("  - Standard job submission: FAILED");
-                return;
+                logger.error("  - Job submission failed for " + jobName);
+                continue;
             }
             
-            System.out.println("  - Standard job submission: SUCCESS");
-            
-            // Test 2: Submit a high priority job
-            jobName = "TestJob2";
-            cpuTime = 3;
-            priority = 1;
-            
-            job = new Job(jobName, cpuTime, priority, System.currentTimeMillis(), JobStatus.WAITING);
-            added = systemController.addJob(job, "ConsoleInterface-Test");
-            
-            if (!added) {
-                System.out.println("  - High priority job submission: FAILED");
-                return;
-            }
-            
-            System.out.println("  - High priority job submission: SUCCESS");
-            
-            // Test 3: Submit a long-running job
-            jobName = "TestJob3";
-            cpuTime = 20;
-            priority = 5;
-            
-            job = new Job(jobName, cpuTime, priority, System.currentTimeMillis(), JobStatus.WAITING);
-            added = systemController.addJob(job, "ConsoleInterface-Test");
-            
-            if (!added) {
-                System.out.println("  - Long-running job submission: FAILED");
-                return;
-            }
-            
-            System.out.println("  - Long-running job submission: SUCCESS");
-            
-            System.out.println("\n2. Testing scheduling policies...");
-            
-            // Test FCFS policy
-            scheduler.setPolicy(Scheduler.Policy.FCFS);
-            System.out.println("  - FCFS policy set: SUCCESS");
-            
-            // Test SJF policy
-            scheduler.setPolicy(Scheduler.Policy.SJF);
-            System.out.println("  - SJF policy set: SUCCESS");
-            
-            // Test Priority policy
-            scheduler.setPolicy(Scheduler.Policy.PRIORITY);
-            System.out.println("  - Priority policy set: SUCCESS");
-            
-            System.out.println("\n3. Testing dispatcher...");
-            ensureDispatcherRunning();
-            System.out.println("  - Dispatcher startup: SUCCESS");
-            
-            System.out.println("\nAll tests completed successfully!");
-            
-        } catch (Exception e) {
-            System.out.println("Test failed: " + e.getMessage());
-            logger.error("Test failed: " + e.getMessage());
+            logger.info("  - Job " + jobName + " submission: SUCCESS");
         }
+        
+        // Ensure the dispatcher is running
+        ensureDispatcherRunning();
+        logger.info("  - Dispatcher startup: SUCCESS");
+        
+        // wait for jobs to complete
+        while (jobQueueManager.getQueueSize() > 0) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                logger.error("Test interrupted: " + e.getMessage());    
+            }
+        }
+        
+        // Measure performance metrics
+        displayPerformanceMetrics();
+
+        // reset the job metrics map
+        systemController.getPerformanceMetrics().reset();
+
+        // update the job metrics map
+        systemController.getPerformanceMetrics().updateJobMetricsMap(mainJobMetricsMap);
+        
+        logger.info("All tests completed successfully!");
     }
     
     /**

@@ -24,16 +24,16 @@ public final class UnifiedApp {
             UnifiedApplicationManager appManager = UnifiedApplicationManager.getInstance();
 
             // Initialize all components
-            System.out.println("Initializing CSUbatch system...");
+            // System.out.println("Initializing CSUbatch system...");
             appManager.initialize();
-            System.out.println("All components initialized.");
+            // System.out.println("All components initialized.");
 
             // Log information about initialization
-            System.out.println("System log file: " + 
-                    appManager.getLoggingSystem().getCurrentLogFile());
+            // System.out.println("System log file: " + 
+                    // appManager.getLoggingSystem().getCurrentLogFile());
 
             // Start the application
-            System.out.println("Starting CSUbatch system...");
+            // System.out.println("Starting CSUbatch system...");
             appManager.startup();
             
             // The application will continue to run in the ConsoleInterface

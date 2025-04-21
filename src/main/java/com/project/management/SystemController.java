@@ -306,7 +306,7 @@ public class SystemController {
      */
     public boolean addJob(Job job, String source) {
         boolean added = jobQueueManager.addJob(job, source);
-        if (added) {
+        if (added && source.equals("ConsoleInterface")) {
             performanceMetrics.recordJobSubmission(job.getName(), job.getCpuTime(), 
                                                  job.getPriority(), job.getArrivalTime());
         }
@@ -314,7 +314,7 @@ public class SystemController {
     }
     
     /**
-     * Removes a job from the queue through the job queue manager.
+     * Removes a job from the queue through the job queue m anager.
      * 
      * @param job    The job to remove
      * @param source The component removing the job

@@ -43,16 +43,15 @@ compile:
 	@echo "Compilation complete."
 
 # Compile test files
-compile-tests: compile
-	@echo "Compiling test files..."
-	@mkdir -p $(TEST_CLASSES_DIR)
-	@$(JAVAC) -d $(TEST_CLASSES_DIR) -cp $(CLASSES_DIR) $(TEST_FILES)
+compile-tests:
+	@echo "Compiling test files with Maven..."
+	@$(MVN) compile test-compile
 	@echo "Test compilation complete."
 
 # Run tests
 test: compile-tests
-	@echo "Running tests..."
-	@$(JAVA) -cp $(CLASSES_DIR):$(TEST_CLASSES_DIR) org.junit.runner.JUnitCore com.project.AppTest
+	@echo "Running tests with Maven..."
+	@$(MVN) test
 	@echo "Tests complete."
 
 # Create executable jar

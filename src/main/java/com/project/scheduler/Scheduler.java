@@ -304,4 +304,17 @@ public class Scheduler implements Runnable {
             logger.info("Scheduler thread exiting");
         }
     }
+
+    public String getPolicyName() {
+        switch (policy) {
+            case FCFS:
+                return "FCFS";
+            case SJF:
+                return "SJF";
+            case PRIORITY:
+                return "PRIORITY";
+            default:
+                return "UNKNOWN";
+        }
+    }
 }

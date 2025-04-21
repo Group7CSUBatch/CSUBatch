@@ -42,23 +42,23 @@ final class TestRunner {
                 // Set up components
                 JobQueue jobQueue = new JobQueue();
                 LoggingSystem loggingSystem = new LoggingSystem();
-
+                
                 // Create loggers for each component
                 Logger schedulerLogger = new Logger("TestScheduler", loggingSystem);
                 Logger dispatcherLogger = new Logger("TestDispatcher", loggingSystem);
                 Logger jobStateLogger = new Logger("TestJobState", loggingSystem);
-
+                
                 // Create managers
                 JobStateManager jobStateManager = new JobStateManager(jobStateLogger);
                 JobQueueManager jobQueueManager = new JobQueueManager(jobQueue, jobStateManager, jobStateLogger);
-
+                
                 // Connect managers
                 jobStateManager.setJobQueueManager(jobQueueManager);
-
+                
                 // Create scheduler and dispatcher
                 Scheduler scheduler = new Scheduler(jobQueueManager, jobStateManager, schedulerLogger);
                 Dispatcher dispatcher = new Dispatcher(scheduler);
-
+                
                 // Configure dispatcher
                 dispatcher.setLogger(dispatcherLogger);
                 dispatcher.setJobStateManager(jobStateManager);
@@ -100,7 +100,7 @@ final class TestRunner {
 
                 // Start scheduler
                 scheduler.start();
-
+                
                 // Start dispatcher in a new thread
                 Thread dispatcherThread = new Thread(dispatcher);
                 dispatcherThread.start();
@@ -111,7 +111,7 @@ final class TestRunner {
                 } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
                 }
-
+                
                 // Stop scheduler and dispatcher
                 scheduler.stop();
                 dispatcher.stop();

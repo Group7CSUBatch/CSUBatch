@@ -61,6 +61,11 @@ public class UnifiedApplicationManager {
         Logger consoleLogger = getOrCreateLogger("ConsoleInterface");
         Logger systemLogger = getOrCreateLogger("System");
         Logger queueLogger = getOrCreateLogger("JobQueue");
+
+        // check if consoleLogger or dispatcherLogger or queueLogger or systemLogger is null
+        if (consoleLogger == null || dispatcherLogger == null || queueLogger == null || systemLogger == null) {
+            throw new IllegalStateException("Logger initialization failed");
+        }
         
         // Create the system controller with a job state manager
         systemController = SystemController.getInstance(jobQueue, null, null, systemLogger);
@@ -155,7 +160,7 @@ public class UnifiedApplicationManager {
         // Set status to not initialized
         initialized = false;
         
-        System.out.println("CSUbatch system has been shut down.");
+        // System.out.println("CSUbatch system has been shut down.");
         loggingSystem.logTransaction("System shutdown complete");
     }
 

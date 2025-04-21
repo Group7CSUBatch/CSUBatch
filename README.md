@@ -1,94 +1,83 @@
-# CSUbatch Scheduling System
+# CSUbatch Job Scheduling System
 
-## Overview
-The CSUbatch Scheduling System is a Java-based application designed to manage and execute jobs using various scheduling policies such as First Come First Served (FCFS), Shortest Job First (SJF), and Priority-based scheduling. The system includes a command-line interface for user interaction and a logging system to track job execution and system performance.
+CSUbatch is a job scheduling system that allows users to submit jobs with different CPU time requirements and priorities. The system uses different scheduling policies to determine the order of job execution.
+
+## Unified Implementation
+
+The system now exclusively uses the unified implementation in the `src/main/java/com/project/unified` package. This implementation offers improved design, better error handling, and enhanced features. See the [Unified Implementation README](src/main/java/com/project/unified/README.md) for details.
+
+The legacy implementation has been completely removed. All code should use the unified implementation classes.
+
+## Features
+
+- Submit jobs with customizable CPU time and priority
+- Choose from multiple scheduling policies:
+  - First Come First Served (FCFS)
+  - Shortest Job First (SJF)
+  - Priority-based scheduling
+- View detailed job status and system information
+- Built-in testing capabilities
+- Comprehensive logging
+
+## Building and Running
+
+Using the unified implementation's build script:
+
+```bash
+# To build the application
+./build.sh
+
+# To build and run the application
+./build.sh run
+
+# To run tests
+./build.sh test
+```
+
+Or using Maven:
+
+```bash
+# Build with Maven
+mvn clean package
+
+# Run the application
+java -jar target/CSUbatch.jar
+```
+
+## Available Commands
+
+- `help` - Show the help message
+- `run <job_name> <cpu_time> <priority>` - Submit a job
+- `list` - List all jobs in the queue
+- `fcfs` - Set scheduling policy to First Come First Served
+- `sjf` - Set scheduling policy to Shortest Job First
+- `priority` - Set scheduling policy to Priority
+- `test` - Run automated tests
+- `version` - Display system version (unified implementation only)
+- `status` - Display system status (unified implementation only)
+- `quit` - Exit the system
 
 ## Project Structure
-- **src/main/java**: Contains the main application source code.
-- **src/test/java**: Contains test source code.
-- **docs**: Contains project documentation.
-- **pom.xml**: Maven configuration file.
 
-## How to Run the Project
-1. Ensure you have Java and Maven installed on your system.
-2. Navigate to the project root directory.
-3. Use the following command to compile and run the project:
-   ```
-   mvn clean compile exec:java -Dexec.mainClass="com.project.App"
-   ```
+- `src/main/java/com/project/` - Core components (Job, JobQueue, Scheduler, Dispatcher)
+- `src/main/java/com/project/unified/` - Unified implementation (UnifiedApp, UnifiedApplicationManager, ConsoleInterface)
+- `src/test/java/com/project/` - Test classes
+- `logs/` - Log files directory
 
-## Installation
+## Recent Improvements
 
-### Prerequisites
-1. **Java 8**: Ensure you have Java Development Kit (JDK) 8 installed on your system. You can download it from [Oracle's official website](https://www.oracle.com/java/technologies/javase-jdk8-downloads.html).
-2. **Maven 3.6.3 or higher**: Ensure you have Apache Maven installed on your system. You can download it from [Maven's official website](https://maven.apache.org/download.cgi).
-
-### Quickstart
-1. **Install Java 8 (OpenJDK)**
-   - For Windows, download and run the installer from [OpenJDK's official website](https://adoptopenjdk.net/).
-   - For macOS, you can use Homebrew:
-     ```sh
-     brew install openjdk@8
-     ```
-   - For Linux, you can use your package manager. For example, on Ubuntu:
-     ```sh
-     sudo apt-get update
-     sudo apt-get install openjdk-8-jdk
-     ```
-
-2. **Install Maven**
-   - For Windows, download and unzip the binary from [Maven's official website](https://maven.apache.org/download.cgi), and add the `bin` directory to your system's PATH.
-   - For macOS, you can use Homebrew:
-     ```sh
-     brew install maven
-     ```
-   - For Linux, you can use your package manager. For example, on Ubuntu:
-     ```sh
-     sudo apt-get update
-     sudo apt-get install maven
-     ```
-
-3. **Verify Installation**
-   - To verify that Java and Maven are installed correctly, run the following commands in your terminal:
-     ```sh
-     java -version
-     mvn -version
-     ```
-
-### Project Setup
-1. **Clone the repository**
-   ```sh
-   git clone https://github.com/Group7CSUBatch/CSUBatch.git
-   cd CSUBatch
-   ```
-
-2. **Install Dependencies**
-   - Navigate to the project root directory and run the following command to install the dependencies and build the project:
-     ```sh
-     mvn clean install
-     ```
-
-3. **Run the Project**
-   - After the dependencies are installed, you can compile and run the project using the following command:
-     ```sh
-     mvn clean compile exec:java -Dexec.mainClass="com.project.App"
-     ```
-
-## Incomplete Tasks
-- Implement detailed performance metrics calculation (turnaround time, CPU time, waiting time, throughput).
-- Complete the automated test logic in the `runTests` method of `CommandLineInterface`.
-- Enhance the logging system to include more detailed job and system information.
-- Add more comprehensive test cases in `AppTest.java`.
-
-## Commands
-- **help**: Displays available commands.
-- **run <job_name> <cpu_time> <priority>**: Submits a job with specified execution time and priority.
-- **list**: Displays all jobs in the queue with their status.
-- **fcfs**: Changes scheduling policy to First Come First Served.
-- **sjf**: Changes scheduling policy to Shortest Job First.
-- **priority**: Changes scheduling policy to Priority-based scheduling.
-- **test**: Runs automated performance tests.
-- **quit**: Exits the system and displays performance statistics.
+1. Unified the interface classes into a single, cleaner ConsoleInterface
+2. Removed the legacy implementation (App.java and ApplicationManager.java)
+3. Created a more maintainable and better organized application structure
+4. Added new commands: `version` and `status`
+5. Improved error handling throughout the codebase
+6. Enhanced the job listing display with better formatting
+7. Added a proper implementation of the test command
 
 ## License
-This project is developed for Coursework CPSC 6179
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Contributors
+
+Group 7 students 

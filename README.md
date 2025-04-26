@@ -142,9 +142,6 @@ The `Makefile` provides additional utility targets for development:
 
 (See `pom.xml` for detailed dependency information)
 
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
 
 ## Contributors
 

@@ -14,5 +14,6 @@
 /workspaces/CSUBatch/src/main/java/com/project/scheduler/Dispatcher.java
 /workspaces/CSUBatch/src/main/java/com/project/scheduler/Scheduler.java
 /workspaces/CSUBatch/src/main/java/com/project/unified/ConsoleInterface.java
+/workspaces/CSUBatch/src/main/java/com/project/unified/JobMetrics.java
 /workspaces/CSUBatch/src/main/java/com/project/unified/UnifiedApp.java
 /workspaces/CSUBatch/src/main/java/com/project/unified/UnifiedApplicationManager.java

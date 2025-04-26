@@ -182,7 +182,7 @@
         <configuration>
           <archive>
             <manifest>
-              <mainClass>com.project.App</mainClass>
+              <mainClass>com.project.unified.UnifiedApp</mainClass>
             </manifest>
           </archive>
           <descriptorRefs>

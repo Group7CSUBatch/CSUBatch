@@ -7,6 +7,7 @@ com/project/management/LockMonitor$LockInfo.class
 com/project/management/LockMonitor.class
 com/project/logging/LoggingSystem$JobStats.class
 com/project/management/JobStateManager$JobStateListener.class
+com/project/unified/JobMetrics.class
 com/project/scheduler/Dispatcher.class
 com/project/scheduler/Scheduler$FCFSComparator.class
 com/project/core/JobQueue.class

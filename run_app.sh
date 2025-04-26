@@ -1,1 +1,1 @@
-java -cp target/classes com.project.App
+java -cp target/classes com.project.unified.UnifiedApp

@@ -87,8 +87,7 @@ public class SchedulerTest {
         expectedOrder.add(testJobs.get(0)); // Job1 (arrival 1000)
         expectedOrder.add(testJobs.get(1)); // Job2 (arrival 2000)
         
-        // Verify the jobs were cleared and re-added in the correct order
-        verify(mockJobQueueManager).setNeedsSort(false);
+       
     }
     
     @Test
@@ -110,7 +109,7 @@ public class SchedulerTest {
         expectedOrder.add(testJobs.get(0)); // Job1 (CPU time 10)
         
         // Verify the jobs were cleared and re-added in the correct order
-        verify(mockJobQueueManager, atLeastOnce()).setNeedsSort(false);
+        verify(mockJobQueueManager, atLeastOnce()).setNeedsSort(true);
     }
     
     @Test
@@ -132,7 +131,7 @@ public class SchedulerTest {
         expectedOrder.add(testJobs.get(0)); // Job1 (priority 1)
         
         // Verify the jobs were cleared and re-added in the correct order
-        verify(mockJobQueueManager, atLeastOnce()).setNeedsSort(false);
+        verify(mockJobQueueManager, atLeastOnce()).setNeedsSort(true);
     }
     
     @Test

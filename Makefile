@@ -15,7 +15,7 @@ CLASSES_DIR = $(TARGET_DIR)/classes
 TEST_CLASSES_DIR = $(TARGET_DIR)/test-classes
 
 # Main class
-MAIN_CLASS = com.project.App
+MAIN_CLASS = com.project.unified.UnifiedApp
 
 # Jar file
 JAR_FILE = $(TARGET_DIR)/CSUbatch.jar

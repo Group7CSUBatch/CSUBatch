@@ -2,77 +2,145 @@
 
 CSUbatch is a job scheduling system that allows users to submit jobs with different CPU time requirements and priorities. The system uses different scheduling policies to determine the order of job execution.
 
-## Unified Implementation
-
-The system now exclusively uses the unified implementation in the `src/main/java/com/project/unified` package. This implementation offers improved design, better error handling, and enhanced features. See the [Unified Implementation README](src/main/java/com/project/unified/README.md) for details.
-
-The legacy implementation has been completely removed. All code should use the unified implementation classes.
-
 ## Features
 
-- Submit jobs with customizable CPU time and priority
-- Choose from multiple scheduling policies:
+- **Job Submission:** Submit jobs with customizable CPU time and priority.
+- **Scheduling Policies:** Choose from multiple scheduling policies:
   - First Come First Served (FCFS)
   - Shortest Job First (SJF)
   - Priority-based scheduling
-- View detailed job status and system information
-- Built-in testing capabilities
-- Comprehensive logging
+- **System Management:** View detailed job status and system information.
+- **Command-Line Interface:** Interact with the system via console commands.
+- **Testing:** Built-in testing capabilities using JUnit and Mockito.
+- **Logging:** Comprehensive logging for system events and errors.
+
+## Prerequisites
+
+Before you can build and run CSUbatch, you need to have the following installed:
+
+- **Java Development Kit (JDK):** Version 1.8 or higher is required. You can download OpenJDK from [Adoptium](https://adoptium.net/) or use your system's package manager.
+- **Apache Maven:** This project uses Maven for dependency management and building. You can download it from the [Maven website](https://maven.apache.org/download.cgi) or install it using a package manager (like `apt` for Debian/Ubuntu or `brew` for macOS).
+
+**Linux (Debian/Ubuntu) Command-Line Setup:**
+
+If you are on a fresh Debian-based Linux system (like Ubuntu), you can install both the default JDK and Maven using `apt` after cloning this repository:
+
+```bash
+# Update package list
+sudo apt update
+
+# Install default JDK and Maven
+sudo apt install default-jdk maven -y
+
+chmod +x ./CSUbatch
+```
+
+Make sure both `java -version` and `mvn -v` commands work and show appropriate versions before proceeding.
+
+## Project Structure
+
+- `src/main/java/com/project/`
+  - `core/`: Core data structures (`Job`, `JobQueue`, `JobStatus`).
+  - `logging/`: Logging components (`Logger`, `LoggingSystem`).
+  - `management/`: System control and job management (`SystemController`, `JobQueueManager`, `JobStateManager`).
+  - `scheduler/`: Job scheduling logic (`Scheduler`, `Dispatcher`).
+  - `unified/`: Console interface and application entry point (`ConsoleInterface`).
+  - `App.java`: Main application entry point.
+  - `TestRunner.java`: Utility for running performance tests.
+- `src/test/java/com/project/`: Unit and integration tests.
+- `logs/`: Directory for log file output.
+- `target/`: Compiled code and packaged JAR file.
+- `pom.xml`: Maven project configuration.
+- `Makefile`: Makefile for build, run, and utility tasks.
 
 ## Building and Running
 
-Using the unified implementation's build script:
+You can build and run the project using either Maven or the provided Makefile.
+
+**Using Maven:**
 
 ```bash
-# To build the application
-./build.sh
-
-# To build and run the application
-./build.sh run
-
-# To run tests
-./build.sh test
-```
-
-Or using Maven:
-
-```bash
-# Build with Maven
+# Clean the project and build the executable JAR
 mvn clean package
 
 # Run the application
 java -jar target/CSUbatch.jar
+
+# Run tests
+mvn test
 ```
 
-## Available Commands
+**Using Makefile:**
 
-- `help` - Show the help message
-- `run <job_name> <cpu_time> <priority>` - Submit a job
-- `list` - List all jobs in the queue
-- `fcfs` - Set scheduling policy to First Come First Served
-- `sjf` - Set scheduling policy to Shortest Job First
-- `priority` - Set scheduling policy to Priority
-- `test` - Run automated tests
-- `version` - Display system version (unified implementation only)
-- `status` - Display system status (unified implementation only)
-- `quit` - Exit the system
+```bash
+# Build everything (clean, compile, test, create JAR)
+make build
 
-## Project Structure
+# Run the application (after building)
+make run
 
-- `src/main/java/com/project/` - Core components (Job, JobQueue, Scheduler, Dispatcher)
-- `src/main/java/com/project/unified/` - Unified implementation (UnifiedApp, UnifiedApplicationManager, ConsoleInterface)
-- `src/test/java/com/project/` - Test classes
-- `logs/` - Log files directory
+# Quickly build without Checkstyle/JaCoCo (useful for development)
+make quick-build
 
-## Recent Improvements
+# Run the application after a quick build
+make quick-run
 
-1. Unified the interface classes into a single, cleaner ConsoleInterface
-2. Removed the legacy implementation (App.java and ApplicationManager.java)
-3. Created a more maintainable and better organized application structure
-4. Added new commands: `version` and `status`
-5. Improved error handling throughout the codebase
-6. Enhanced the job listing display with better formatting
-7. Added a proper implementation of the test command
+# Compile source code
+make compile
+
+# Run tests
+make test
+
+# Clean build artifacts
+make clean
+```
+
+See `make help` for more Makefile targets.
+
+## Application start
+
+
+```
+# compile and test application
+mvn clean package
+
+# run application
+./CSUbatch
+```
+
+
+## Available Application Commands
+
+When the application is running, you can use the following commands:
+
+- `help [-command]` - Show help message (optionally for a specific command).
+- `run <job_name> <cpu_time> <priority>` - Submit a job.
+- `list` - List all jobs in the queue and the currently running job.
+- `fcfs` - Set scheduling policy to First Come First Served.
+- `sjf` - Set scheduling policy to Shortest Job First.
+- `priority` - Set scheduling policy to Priority-based scheduling.
+- `load <filename>` - Load jobs from a file.
+- `test [benchmark_name policy num_jobs max_cpu_time max_priority arrival_interval]` - Run performance tests.
+- `version` - Display system version.
+- `status` - Display current system status, policy, and queue size.
+- `quit` or `exit` - Exit the system.
+
+## Makefile Development Targets
+
+The `Makefile` provides additional utility targets for development:
+
+- `make help`: Show all available Makefile targets.
+- `make clean-logs`: Remove all files from the `logs/` directory.
+- `make clean-backups`: Remove backup (`.bak`) files created by fix tasks.
+- `make fix-indent`: Attempt to automatically fix indentation in Java source files.
+- `make clean-all`: Run `clean`, `clean-logs`, and `clean-backups`.
+
+## Dependencies
+
+- **JUnit 5:** For unit testing.
+- **Mockito:** For creating mock objects in tests.
+
+(See `pom.xml` for detailed dependency information)
 
 ## License
 
